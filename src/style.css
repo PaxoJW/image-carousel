@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: aqua;
+    height: 200px;
+}
+
+.image-window {
+    /* background-color: yellowgreen; */
+    background-image: url(https://www.google.com/imgres?q=github&imgurl=https%3A%2F%2Frock-the-prototype.com%2Fwp-content%2Fuploads%2F2022%2F01%2Fgithub-repositories-1.jpg&imgrefurl=https%3A%2F%2Frock-the-prototype.com%2Fen%2Fsoftware-development%2Fgithub%2F&docid=i_Eg5LtoUbdAyM&tbnid=aKzoCxtHv2UlhM&vet=12ahUKEwjriuvc6oyRAxUCywIHHX9wGjoQM3oECBkQAA..i&w=1046&h=660&hcb=2&ved=2ahUKEwjriuvc6oyRAxUCywIHHX9wGjoQM3oECBkQAA);
+}
+
+button {
+    width: 10px;
+    height: 10px;
+    border: 1px solid grey;
+    border-radius: 100%;
+}
+
+#fwd-btn, #back-btn {
+    border-radius: 10px;
+    width:auto;
+    height: auto;
+    padding: 5px;
+}
