@@ -5,11 +5,14 @@
 
 .container {
     background-color: aqua;
+    /* visibility: collapse; */
+    display: flex;
 }
 
-/* .image-window {
-    
-} */
+.image-window {
+    background-color: brown;
+    visibility: visible;
+}
 
 .btn-bar {
     display: flex;
@@ -27,4 +30,8 @@ button {
     width:auto;
     height: auto;
     padding: 5px;
+}
+
+img {
+    
 }
