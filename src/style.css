@@ -32,6 +32,6 @@ button {
     padding: 5px;
 }
 
-img {
-    
+button.active {
+    background-color: black;
 }

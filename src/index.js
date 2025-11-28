@@ -17,19 +17,14 @@ const img_window = document.querySelector('.image-window')
 let img_counter = 0; //used to give unique ids to images
 
 const btn_slide = document.querySelector(".btn-slide");
+const nextBtn = document.querySelector("#fwd-btn");
+const prevBtn = document.querySelector('#back-btn');
 
 images.forEach(src => {
   setUpImg(src);
   setUpBtn();
   img_counter++;
 });
-
-function setUpBtn() {
-  const btn = document.createElement('button');
-  btn.setAttribute("id", `btn-${img_counter}`);
-  btn.addEventListener("click", (e) => changeSlide(e));
-  btn_slide.appendChild(btn);
-};
 
 function setUpImg(src) {
   const img = document.createElement('img');
@@ -39,13 +34,24 @@ function setUpImg(src) {
   
   if (img_counter === 0) {
     img_window.appendChild(img);
+
   } else {
     container.appendChild(img);
   }
 };
 
+function setUpBtn() {
+  const btn = document.createElement('button');
+  btn.setAttribute("id", `btn-${img_counter}`);
+  btn.addEventListener("click", (e) => changeSlide(e));
+  btn_slide.appendChild(btn);
+  if (img_counter === 0) {
+    btn.classList.add("active");
+  }
+};
+
 function changeSlide(e) {
-  //Get the ids of the current image and the clicked button
+  //Get the ids (just the number) of the current image and the clicked button
   const currImg = img_window.children[0];
   const id_img_current = currImg.getAttribute("id").split("-")[1];
   const id_btn_clicked = e.srcElement.id.split("-")[1];
@@ -55,9 +61,48 @@ function changeSlide(e) {
   } else {
     //Swap the images
     container.appendChild(currImg);
-    img_window.appendChild(document.getElementById(`img-${id_btn_clicked}`));
+    const newImg = document.getElementById(`img-${id_btn_clicked}`);
+    img_window.appendChild(newImg);
+
+    //Toggle the active class to show which slide is selected
+    const currBtn = document.getElementById(`btn-${id_img_current}`);
+    const newBtn = document.getElementById(e.srcElement.id);
+    currBtn.classList.toggle("active");
+    newBtn.classList.toggle("active");
   }
 };
+
+function goNext() {
+  //Get the ids (just the number) of the current image and the clicked button
+  console.log("Run");
+  const currImg = img_window.children[0];
+  const id_img_current = Number(currImg.getAttribute("id").split("-")[1]);
+  console.log(id_img_current);
+  const maxID = document.querySelectorAll("img").length - 1;
+  let id_next = 0;
+
+  if (id_img_current < maxID ) {
+    id_next = id_img_current + 1;
+  } else {
+    id_next = 0;
+  }
+  console.log(typeof(maxID));
+  console.log("current", id_img_current);
+  console.log("next", id_next);
+  //Swap the images
+  container.appendChild(currImg);
+  const newImg = document.getElementById(`img-${id_next}`);
+  console.log(newImg);
+  img_window.appendChild(newImg);
+
+  //Toggle the active class to show which slide is selected
+  const currBtn = document.getElementById(`btn-${id_img_current}`);
+  const newBtn = document.getElementById(`btn-${id_next}`);
+  currBtn.classList.toggle("active");
+  newBtn.classList.toggle("active");
+};
+
+nextBtn.addEventListener("click", goNext);
 
 
 
