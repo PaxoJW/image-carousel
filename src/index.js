@@ -74,10 +74,8 @@ function changeSlide(e) {
 
 function goNext() {
   //Get the ids (just the number) of the current image and the clicked button
-  console.log("Run");
   const currImg = img_window.children[0];
   const id_img_current = Number(currImg.getAttribute("id").split("-")[1]);
-  console.log(id_img_current);
   const maxID = document.querySelectorAll("img").length - 1;
   let id_next = 0;
 
@@ -86,13 +84,10 @@ function goNext() {
   } else {
     id_next = 0;
   }
-  console.log(typeof(maxID));
-  console.log("current", id_img_current);
-  console.log("next", id_next);
+
   //Swap the images
   container.appendChild(currImg);
   const newImg = document.getElementById(`img-${id_next}`);
-  console.log(newImg);
   img_window.appendChild(newImg);
 
   //Toggle the active class to show which slide is selected
@@ -102,8 +97,33 @@ function goNext() {
   newBtn.classList.toggle("active");
 };
 
-nextBtn.addEventListener("click", goNext);
+function goPrev() {
+  //Get the ids (just the number) of the current image and the clicked button
+  const currImg = img_window.children[0];
+  const id_img_current = Number(currImg.getAttribute("id").split("-")[1]);
+  const maxID = document.querySelectorAll("img").length - 1;
+  let id_prev = 0;
 
+  if (id_img_current > 0) {
+    id_prev = id_img_current - 1;
+  } else {
+    id_prev = maxID;
+  }
+
+  //Swap the images
+  container.appendChild(currImg);
+  const newImg = document.getElementById(`img-${id_prev}`);
+  img_window.appendChild(newImg);
+
+  //Toggle the active class to show which slide is selected
+  const currBtn = document.getElementById(`btn-${id_img_current}`);
+  const newBtn = document.getElementById(`btn-${id_prev}`);
+  currBtn.classList.toggle("active");
+  newBtn.classList.toggle("active");
+};
+
+nextBtn.addEventListener("click", goNext);
+prevBtn.addEventListener("click", goPrev);
 
 
 
