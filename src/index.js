@@ -125,7 +125,4 @@ function goPrev() {
 nextBtn.addEventListener("click", goNext);
 prevBtn.addEventListener("click", goPrev);
 
-
-
-
-
+setInterval(goNext,5000);
