@@ -1,128 +1,130 @@
 import './style.css';
 
-// 1. The function r (require.context(...)) gives r.keys() which are the images paths
-// and r(key) which gives the built asset URL
-function importAll(r) {
+//Factory function to import images
+export function loadImages() {
+  // 1. The function r (require.context(...)) gives r.keys() which are the images paths
+  // and r(key) which gives the built asset URL
+  function importAll(r) {
     return r.keys().map(r); 
+  }
+
+  // 2. Create a require.context instance - a webpack function
+  const images = importAll(
+    require.context('../assets', false, /\.(png|jpe?g|svg)$/)
+  );
+
+  return images;
 }
 
-// 2. Create a require.context instance - a webpack function
-const images = importAll(
-  require.context('../assets', false, /\.(png|jpe?g|svg)$/)
-);
+export function imageCarousel({
+  images,
+  containerSelector,
+  viewportSelector,
+  btnContainerSelector,
+  nextBtnSelector,
+  prevBtnSelector
+}) {
 
-// 3. Append images and respective buttons to DOM
-const container = document.querySelector('.container');
-const img_window = document.querySelector('.image-window')
-let img_counter = 0; //used to give unique ids to images
+  // DOM references
+  const container = document.querySelector(containerSelector);
+  const img_window = document.querySelector(viewportSelector);
+  const btn_slide = document.querySelector(btnContainerSelector);
+  const nextBtn = document.querySelector(nextBtnSelector);
+  const prevBtn = document.querySelector(prevBtnSelector);
 
-const btn_slide = document.querySelector(".btn-slide");
-const nextBtn = document.querySelector("#fwd-btn");
-const prevBtn = document.querySelector('#back-btn');
+  let currentIndex = 0; //used to track which image we are displaying
 
-images.forEach(src => {
-  setUpImg(src);
-  setUpBtn();
-  img_counter++;
-});
+  //Arrays to store created elements
+  const imgElements = [];
+  const btnElements = [];
 
-function setUpImg(src) {
-  const img = document.createElement('img');
-  
-  img.src = src; // Webpack replaces this with the final file URL
-  img.setAttribute("id", `img-${img_counter}`);
-  
-  if (img_counter === 0) {
-    img_window.appendChild(img);
-
-  } else {
-    container.appendChild(img);
+  function init() {
+    setUpImg();
+    setUpBtn();
+    showImage(0);
+    attachEvents();
+    startAutoPlay();
   }
-};
 
-function setUpBtn() {
-  const btn = document.createElement('button');
-  btn.setAttribute("id", `btn-${img_counter}`);
-  btn.addEventListener("click", (e) => changeSlide(e));
-  btn_slide.appendChild(btn);
-  if (img_counter === 0) {
-    btn.classList.add("active");
+  function setUpImg() {
+    images.forEach((src, index) => {
+      const img = document.createElement('img');
+    
+      img.src = src; // Webpack replaces this with the final file URL
+      img.setAttribute("id", `img-${index}`);
+      
+      if (index === 0) {
+        img_window.appendChild(img);
+
+      } else {
+        container.appendChild(img);
+      }
+
+      imgElements.push(img);
+    });
   }
-};
 
-function changeSlide(e) {
-  //Get the ids (just the number) of the current image and the clicked button
-  const currImg = img_window.children[0];
-  const id_img_current = currImg.getAttribute("id").split("-")[1];
-  const id_btn_clicked = e.srcElement.id.split("-")[1];
+  function setUpBtn() {
+    images.forEach((_, index) => {
+      const btn = document.createElement('button');
+      btn.setAttribute("id", `btn-${index}`);
+      if (index === 0) {
+        btn.classList.add("active");
+      }
+      btn.addEventListener("click", () => showImage(index));
+      btn_slide.appendChild(btn);
+      
+      btnElements.push(btn);
+    });
+  }
 
-  if (id_img_current === id_btn_clicked) {
-    return
-  } else {
-    //Swap the images
-    container.appendChild(currImg);
-    const newImg = document.getElementById(`img-${id_btn_clicked}`);
+  function showImage(index) {
+    console.log(index, currentIndex);
+    if (index === currentIndex) return;
+
+    //Otherwise
+    container.appendChild(imgElements[currentIndex]);
+    const newImg = document.getElementById(`img-${index}`);
     img_window.appendChild(newImg);
 
     //Toggle the active class to show which slide is selected
-    const currBtn = document.getElementById(`btn-${id_img_current}`);
-    const newBtn = document.getElementById(e.srcElement.id);
+    const currBtn = document.getElementById(`btn-${currentIndex}`);
+    const newBtn = document.getElementById(`btn-${index}`);
     currBtn.classList.toggle("active");
     newBtn.classList.toggle("active");
+
+    currentIndex = index;
+    console.log("current index after:", currentIndex);
+  };
+
+  function goNext() {
+    const nextIndex = (currentIndex + 1) % imgElements.length;
+    showImage(nextIndex);
+  };
+
+  function goPrev() {
+    const prevIndex = (currentIndex - 1 + imgElements.length) % imgElements.length;
+    showImage(prevIndex);
+  };
+
+  function attachEvents() {
+    nextBtn.addEventListener("click", goNext);
+    prevBtn.addEventListener("click", goPrev);
   }
-};
-
-function goNext() {
-  //Get the ids (just the number) of the current image and the clicked button
-  const currImg = img_window.children[0];
-  const id_img_current = Number(currImg.getAttribute("id").split("-")[1]);
-  const maxID = document.querySelectorAll("img").length - 1;
-  let id_next = 0;
-
-  if (id_img_current < maxID ) {
-    id_next = id_img_current + 1;
-  } else {
-    id_next = 0;
+  
+  function startAutoPlay(interval = 5000) {
+    return timer = setInterval(goNext,interval);
   }
-
-  //Swap the images
-  container.appendChild(currImg);
-  const newImg = document.getElementById(`img-${id_next}`);
-  img_window.appendChild(newImg);
-
-  //Toggle the active class to show which slide is selected
-  const currBtn = document.getElementById(`btn-${id_img_current}`);
-  const newBtn = document.getElementById(`btn-${id_next}`);
-  currBtn.classList.toggle("active");
-  newBtn.classList.toggle("active");
-};
-
-function goPrev() {
-  //Get the ids (just the number) of the current image and the clicked button
-  const currImg = img_window.children[0];
-  const id_img_current = Number(currImg.getAttribute("id").split("-")[1]);
-  const maxID = document.querySelectorAll("img").length - 1;
-  let id_prev = 0;
-
-  if (id_img_current > 0) {
-    id_prev = id_img_current - 1;
-  } else {
-    id_prev = maxID;
+  
+  function stopAutoPlay() {
+    clearInterval(timer);
   }
 
-  //Swap the images
-  container.appendChild(currImg);
-  const newImg = document.getElementById(`img-${id_prev}`);
-  img_window.appendChild(newImg);
-
-  //Toggle the active class to show which slide is selected
-  const currBtn = document.getElementById(`btn-${id_img_current}`);
-  const newBtn = document.getElementById(`btn-${id_prev}`);
-  currBtn.classList.toggle("active");
-  newBtn.classList.toggle("active");
-};
-
-nextBtn.addEventListener("click", goNext);
-prevBtn.addEventListener("click", goPrev);
-
-setInterval(goNext,5000);
+  return {
+    init,
+    goNext,
+    goPrev,
+    startAutoPlay,
+    stopAutoPlay
+  };
+}
