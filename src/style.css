@@ -1,37 +1,38 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-    background-color: aqua;
-    /* visibility: collapse; */
-    display: flex;
+  background-color: aqua;
+  /* visibility: collapse; */
+  display: flex;
 }
 
 .image-window {
-    background-color: brown;
-    visibility: visible;
+  background-color: brown;
+  visibility: visible;
 }
 
 .btn-bar {
-    display: flex;
+  display: flex;
 }
 
 button {
-    width: 10px;
-    height: 10px;
-    border: 1px solid grey;
-    border-radius: 100%;
+  width: 10px;
+  height: 10px;
+  border: 1px solid grey;
+  border-radius: 100%;
 }
 
-#fwd-btn, #back-btn {
-    border-radius: 10px;
-    width:auto;
-    height: auto;
-    padding: 5px;
+#fwd-btn,
+#back-btn {
+  border-radius: 10px;
+  width: auto;
+  height: auto;
+  padding: 5px;
 }
 
 button.active {
-    background-color: black;
+  background-color: black;
 }
